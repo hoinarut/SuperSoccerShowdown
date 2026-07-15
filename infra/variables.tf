@@ -65,6 +65,54 @@ variable "lambda_timeout_seconds" {
   default     = 30
 }
 
+variable "worker_lambda_deployment_package_path" {
+  description = "Local path to the worker Lambda deployment zip published by CI. Leave empty to provision the queue without deploying the worker function."
+  type        = string
+  default     = ""
+}
+
+variable "worker_lambda_package_version" {
+  description = "Version label for the worker deployment artifact stored in S3 (for example a git commit SHA)."
+  type        = string
+  default     = "latest"
+}
+
+variable "worker_lambda_runtime" {
+  description = "AWS Lambda managed runtime for the SQS worker."
+  type        = string
+  default     = "dotnet10"
+}
+
+variable "worker_lambda_handler" {
+  description = "Lambda handler for the SQS worker function."
+  type        = string
+  default     = "MyApp.Worker::MyApp.Worker.Function::FunctionHandler"
+}
+
+variable "worker_lambda_memory_mb" {
+  description = "Memory allocated to the worker Lambda function in MB."
+  type        = number
+  default     = 512
+}
+
+variable "worker_lambda_timeout_seconds" {
+  description = "Worker Lambda timeout in seconds."
+  type        = number
+  default     = 30
+}
+
+variable "sqs_max_retries" {
+  description = "Maximum retry count before the worker stops re-queuing failed messages."
+  type        = number
+  default     = 3
+}
+
+variable "sqs_message_retention_seconds" {
+  description = "How long SQS retains messages in seconds."
+  type        = number
+  default     = 345600
+}
+
 variable "api_gateway_stage_name" {
   description = "API Gateway stage name exposed in the public URL."
   type        = string

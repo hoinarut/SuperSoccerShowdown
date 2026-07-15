@@ -48,6 +48,19 @@ jobs:
           cd "${{ env.ARTIFACTS_DIR }}/lambda"
           zip -r ../api.zip .
 
+      - name: Publish Worker for Lambda
+        run: |
+          dotnet publish src/MyApp.Worker/MyApp.Worker.csproj \
+            --configuration Release \
+            --runtime linux-x64 \
+            --self-contained false \
+            --output "${{ env.ARTIFACTS_DIR }}/worker"
+
+      - name: Package Worker zip
+        run: |
+          cd "${{ env.ARTIFACTS_DIR }}/worker"
+          zip -r ../worker.zip .
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -78,6 +91,8 @@ jobs:
           TF_VAR_database_connection_string: ${{ secrets.DATABASE_CONNECTION_STRING }}
           TF_VAR_lambda_deployment_package_path: ${{ github.workspace }}/${{ env.ARTIFACTS_DIR }}/api.zip
           TF_VAR_lambda_package_version: ${{ github.sha }}
+          TF_VAR_worker_lambda_deployment_package_path: ${{ github.workspace }}/${{ env.ARTIFACTS_DIR }}/worker.zip
+          TF_VAR_worker_lambda_package_version: ${{ github.sha }}
         run: terraform apply -auto-approve -input=false
 
       - name: Read Terraform outputs

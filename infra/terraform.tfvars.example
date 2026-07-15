@@ -9,6 +9,10 @@ database_connection_string = "Server=your-sql-server;Database=sss;User ID=sa;Pas
 # lambda_deployment_package_path = "../artifacts/api.zip"
 # lambda_package_version         = "local-build"
 
+# Set by CI when deploying the worker package.
+# worker_lambda_deployment_package_path = "../artifacts/worker.zip"
+# worker_lambda_package_version         = "local-build"
+
 lambda_memory_mb       = 1024
 lambda_timeout_seconds = 30
 lambda_runtime         = "dotnet10"

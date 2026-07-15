@@ -28,6 +28,21 @@ output "lambda_function_name" {
   value       = try(aws_lambda_function.api[0].function_name, null)
 }
 
+output "worker_lambda_function_name" {
+  description = "Deployed worker Lambda function name. Empty until a worker deployment package is provided."
+  value       = try(aws_lambda_function.worker[0].function_name, null)
+}
+
+output "team_processing_queue_url" {
+  description = "SQS queue URL for asynchronous team processing messages."
+  value       = aws_sqs_queue.team_processing.url
+}
+
+output "team_processing_queue_arn" {
+  description = "SQS queue ARN for asynchronous team processing messages."
+  value       = aws_sqs_queue.team_processing.arn
+}
+
 output "api_gateway_url" {
   description = "Public URL for the HTTP API. Empty until a deployment package is provided."
   value       = try(aws_apigatewayv2_stage.default[0].invoke_url, null)

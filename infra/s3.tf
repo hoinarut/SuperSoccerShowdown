@@ -37,3 +37,12 @@ resource "aws_s3_object" "lambda_package" {
   source = var.lambda_deployment_package_path
   etag   = filemd5(var.lambda_deployment_package_path)
 }
+
+resource "aws_s3_object" "worker_lambda_package" {
+  count = local.deploy_worker ? 1 : 0
+
+  bucket = aws_s3_bucket.lambda_artifacts.id
+  key    = "worker/${var.worker_lambda_package_version}.zip"
+  source = var.worker_lambda_deployment_package_path
+  etag   = filemd5(var.worker_lambda_deployment_package_path)
+}

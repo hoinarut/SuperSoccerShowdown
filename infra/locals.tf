@@ -1,7 +1,8 @@
 locals {
   name_prefix = "${var.project_name}-${var.environment}"
 
-  deploy_api = var.lambda_deployment_package_path != ""
+  deploy_api    = var.lambda_deployment_package_path != ""
+  deploy_worker = var.worker_lambda_deployment_package_path != ""
 
   connection_string = var.enable_rds ? (
     "Server=${aws_db_instance.main[0].address},${aws_db_instance.main[0].port};Database=${var.project_name};User ID=${var.db_username};Password=${var.db_password};TrustServerCertificate=true;Encrypt=true;"
@@ -23,4 +24,10 @@ locals {
       "Cors__AllowedOrigins__${index}" => origin
     }
   )
+
+  worker_lambda_environment = {
+    API_BASE_URL = try(aws_apigatewayv2_stage.default[0].invoke_url, "")
+    QUEUE_URL    = aws_sqs_queue.team_processing.url
+    MAX_RETRIES  = tostring(var.sqs_max_retries)
+  }
 }

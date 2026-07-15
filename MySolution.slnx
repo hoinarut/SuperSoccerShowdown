@@ -9,6 +9,9 @@
     <File Path="infra\rds.tf" />
     <File Path="infra\s3.tf" />
     <File Path="infra\secrets.tf" />
+    <File Path="infra\sqs.tf" />
+    <File Path="infra\sqs_worker_iam.tf" />
+    <File Path="infra\sqs_worker_lambda.tf" />
     <File Path="infra\terraform.tfvars.example" />
     <File Path="infra\variables.tf" />
     <File Path="infra\versions.tf" />
@@ -19,6 +22,7 @@
     <Project Path="src/MyApp.Application/MyApp.Application.csproj" />
     <Project Path="src/MyApp.Domain/MyApp.Domain.csproj" />
     <Project Path="src/MyApp.Infrastructure/MyApp.Infrastructure.csproj" />
+    <Project Path="src/MyApp.Worker/MyApp.Worker.csproj" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/MyApp.Api.Tests/MyApp.Api.Tests.csproj" />
@@ -26,5 +30,6 @@
     <Project Path="tests/MyApp.Domain.Tests/MyApp.Domain.Tests.csproj" />
     <Project Path="tests/MyApp.Infrastructure.Tests/MyApp.Infrastructure.Tests.csproj" />
     <Project Path="tests/MyApp.Testing.Common/MyApp.Testing.Common.csproj" />
+    <Project Path="tests/MyApp.Worker.Tests/MyApp.Worker.Tests.csproj" />
   </Folder>
 </Solution>
