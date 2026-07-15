@@ -4,16 +4,28 @@ using MyApp.Domain.Ports;
 
 namespace MyApp.Application.Handlers.Team;
 
-public sealed class GetTeamsHandler(ITeamRepository teamRepository)
+public sealed class GetTeamsHandler(ITeamRepository teamRepository, IUniverseRepository universeRepository)
     : IQueryHandler<GetTeamsQuery, List<TeamDto>>
 {
     public async ValueTask<List<TeamDto>> Handle(GetTeamsQuery query, CancellationToken cancellationToken)
     {
         var teams = await teamRepository.GetAllAsync(cancellationToken);
 
-        return (teams.Count == 0
-            ? []
-            : teams.Select(t=> new TeamDto(t.Id, t.Name, t.AttackersCount, t.DefendersCount, 
-                t.Players?.Select(p => new PlayerDto(p.Id, p.Name, p.Weight, p.Height, p.Type, p.ExternalResourceId)).ToList()!)).ToList());
+        if (teams.Count == 0)
+        {
+            return [];
+        }
+
+        var universeNames = universeRepository.Query.ToDictionary(universe => universe.Id, universe => universe.Name);
+
+        return teams.Select(team => new TeamDto(
+            team.Id,
+            team.Name,
+            team.UniverseId,
+            universeNames.GetValueOrDefault(team.UniverseId, "Unknown"),
+            team.AttackersCount,
+            team.DefendersCount,
+            team.Players?.Select(player =>
+                new PlayerDto(player.Id, player.Name, player.Weight, player.Height, player.Type, player.ExternalResourceId)).ToList()!)).ToList();
     }
 }

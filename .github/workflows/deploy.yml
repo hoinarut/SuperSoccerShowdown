@@ -9,7 +9,9 @@ on:
 env:
   AWS_REGION: ${{ vars.AWS_REGION || 'eu-west-1' }}
   DOTNET_VERSION: 10.0.x
+  NODE_VERSION: 22.x
   ARTIFACTS_DIR: artifacts
+  WEB_DIR: src/web
 
 permissions:
   contents: read
@@ -57,6 +59,7 @@ jobs:
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: 1.9.8
+          terraform_wrapper: false
 
       - name: Terraform Init
         working-directory: infra
@@ -77,6 +80,57 @@ jobs:
           TF_VAR_lambda_package_version: ${{ github.sha }}
         run: terraform apply -auto-approve -input=false
 
-      - name: Output API URL
+      - name: Read Terraform outputs
+        id: terraform
         working-directory: infra
-        run: terraform output api_gateway_url
+        run: |
+          echo "api_url=$(terraform output -raw api_gateway_url)" >> "$GITHUB_OUTPUT"
+          echo "ui_bucket=$(terraform output -raw ui_bucket_name)" >> "$GITHUB_OUTPUT"
+          echo "ui_cloudfront_url=$(terraform output -raw ui_cloudfront_url)" >> "$GITHUB_OUTPUT"
+          echo "ui_distribution_id=$(terraform output -raw ui_cloudfront_distribution_id)" >> "$GITHUB_OUTPUT"
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: ${{ env.WEB_DIR }}/package-lock.json
+
+      - name: Build Angular UI
+        working-directory: ${{ env.WEB_DIR }}
+        env:
+          API_URL: ${{ steps.terraform.outputs.api_url }}
+        run: |
+          npm ci
+          cat > src/environments/environment.prod.ts <<EOF
+          export const environment = {
+            production: true,
+            apiUrl: '${API_URL}',
+          };
+          EOF
+          npm run build
+
+      - name: Deploy UI to S3
+        run: |
+          aws s3 sync "${{ env.WEB_DIR }}/dist/web/browser/" "s3://${{ steps.terraform.outputs.ui_bucket }}/" \
+            --delete \
+            --cache-control "public,max-age=31536000,immutable" \
+            --exclude "index.html" \
+            --exclude "*.svg"
+
+          aws s3 sync "${{ env.WEB_DIR }}/dist/web/browser/" "s3://${{ steps.terraform.outputs.ui_bucket }}/" \
+            --cache-control "public,max-age=0,no-cache,no-store,must-revalidate" \
+            --exclude "*" \
+            --include "index.html" \
+            --include "*.svg"
+
+      - name: Invalidate CloudFront cache
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id "${{ steps.terraform.outputs.ui_distribution_id }}" \
+            --paths "/*"
+
+      - name: Output deployment URLs
+        run: |
+          echo "API URL: ${{ steps.terraform.outputs.api_url }}"
+          echo "UI URL: ${{ steps.terraform.outputs.ui_cloudfront_url }}"

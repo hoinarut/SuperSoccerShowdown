@@ -1,0 +1,108 @@
+<section class="page">
+  <header class="page-header">
+    <div>
+      <p class="eyebrow">SuperSoccer Showdown</p>
+      <h1>Teams</h1>
+    </div>
+    <button type="button" class="primary" (click)="openModal()">Generate team</button>
+  </header>
+
+  @if (error() && !modalOpen()) {
+    <p class="banner error">{{ error() }}</p>
+  }
+
+  @if (loading()) {
+    <p class="status">Loading teams…</p>
+  } @else if (teams().length === 0) {
+    <div class="empty">
+      <p>No teams yet.</p>
+      <button type="button" class="secondary" (click)="openModal()">Create the first team</button>
+    </div>
+  } @else {
+    <div class="team-grid">
+      @for (team of teams(); track team.id) {
+        <article class="team-card">
+          <div class="team-card__header">
+            <div class="team-card__title">
+              <h2>{{ team.name }}</h2>
+              <span class="lineup">{{ team.attackers }} attackers · {{ team.defenders }} defenders</span>
+            </div>
+            <img
+              class="universe-badge"
+              [src]="universeImage(team.universeName)"
+              [alt]="team.universeName"
+              [title]="team.universeName"
+            />
+          </div>
+
+          <ul class="player-list">
+            @for (player of team.players; track player.id) {
+              <li>
+                <div>
+                  <strong>{{ player.name }}</strong>
+                  <span class="player-meta">{{ player.weight }} kg · {{ player.height }} cm</span>
+                </div>
+                <span class="role" [attr.data-role]="normalizeRole(player.playerType)">{{ roleLabel(player.playerType) }}</span>
+              </li>
+            }
+          </ul>
+        </article>
+      }
+    </div>
+  }
+</section>
+
+@if (modalOpen()) {
+  <div class="modal-backdrop" (click)="closeModal()">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="create-team-title" (click)="$event.stopPropagation()">
+      <header class="modal__header">
+        <h2 id="create-team-title">Generate team</h2>
+        <button type="button" class="icon-button" aria-label="Close" (click)="closeModal()">×</button>
+      </header>
+
+      <form class="modal__body" [formGroup]="form" (ngSubmit)="submit()">
+        @if (error()) {
+          <p class="banner error">{{ error() }}</p>
+        }
+
+        <label>
+          Team name
+          <input type="text" formControlName="name" maxlength="50" placeholder="Dream Team" />
+        </label>
+
+        <label>
+          Universe
+          <select formControlName="universeId">
+            @for (universe of universes(); track universe.id) {
+              <option [ngValue]="universe.id">{{ universe.name }}</option>
+            }
+          </select>
+        </label>
+
+        <div class="lineup-fields">
+          <label>
+            Attackers
+            <input type="number" formControlName="attackers" min="0" max="4" />
+          </label>
+
+          <label>
+            Defenders
+            <input type="number" formControlName="defenders" min="0" max="4" />
+          </label>
+        </div>
+
+        <p class="hint" [class.invalid]="!lineupValid()">
+          Attackers + defenders must equal 4. One goalie is assigned automatically.
+          Current total: {{ lineupTotal() }} / 4
+        </p>
+
+        <footer class="modal__footer">
+          <button type="button" class="secondary" [disabled]="submitting()" (click)="closeModal()">Cancel</button>
+          <button type="submit" class="primary" [disabled]="submitting() || form.invalid || !lineupValid()">
+            {{ submitting() ? 'Generating…' : 'Generate' }}
+          </button>
+        </footer>
+      </form>
+    </div>
+  </div>
+}

@@ -1,3 +1,18 @@
+output "ui_bucket_name" {
+  description = "S3 bucket storing the Angular UI static assets."
+  value       = aws_s3_bucket.ui.id
+}
+
+output "ui_cloudfront_url" {
+  description = "Public HTTPS URL for the Angular UI."
+  value       = "https://${aws_cloudfront_distribution.ui.domain_name}"
+}
+
+output "ui_cloudfront_distribution_id" {
+  description = "CloudFront distribution ID for cache invalidation."
+  value       = aws_cloudfront_distribution.ui.id
+}
+
 output "lambda_artifacts_bucket" {
   description = "S3 bucket storing Lambda deployment packages."
   value       = aws_s3_bucket.lambda_artifacts.id

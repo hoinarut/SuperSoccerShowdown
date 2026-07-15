@@ -44,6 +44,7 @@ public class TeamControllerTests : IClassFixture<CustomWebApplicationFactory>
         var team = await response.Content.ReadFromJsonAsync<TeamDto>(JsonOptions);
         team.Should().NotBeNull();
         team!.Name.Should().Be("Dream Team");
+        team.UniverseName.Should().Be("StarWars");
         team.Attackers.Should().Be(1);
         team.Defenders.Should().Be(3);
         team.Players.Should().HaveCount(Constants.NumberOfPlayers);
