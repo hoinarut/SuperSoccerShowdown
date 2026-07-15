@@ -1,4 +1,19 @@
 <Solution>
+  <Folder Name="/infra/">
+    <File Path="infra\api_gateway.tf" />
+    <File Path="infra\backend.hcl.example" />
+    <File Path="infra\iam.tf" />
+    <File Path="infra\lambda.tf" />
+    <File Path="infra\locals.tf" />
+    <File Path="infra\outputs.tf" />
+    <File Path="infra\rds.tf" />
+    <File Path="infra\s3.tf" />
+    <File Path="infra\secrets.tf" />
+    <File Path="infra\terraform.tfvars.example" />
+    <File Path="infra\variables.tf" />
+    <File Path="infra\versions.tf" />
+    <File Path="infra\vpc.tf" />
+  </Folder>
   <Folder Name="/src/">
     <Project Path="src/MyApp.Api/MyApp.Api.csproj" />
     <Project Path="src/MyApp.Application/MyApp.Application.csproj" />
@@ -6,7 +21,10 @@
     <Project Path="src/MyApp.Infrastructure/MyApp.Infrastructure.csproj" />
   </Folder>
   <Folder Name="/tests/">
+    <Project Path="tests/MyApp.Api.Tests/MyApp.Api.Tests.csproj" />
     <Project Path="tests/MyApp.Application.Tests/MyApp.Application.Tests.csproj" />
+    <Project Path="tests/MyApp.Domain.Tests/MyApp.Domain.Tests.csproj" />
     <Project Path="tests/MyApp.Infrastructure.Tests/MyApp.Infrastructure.Tests.csproj" />
+    <Project Path="tests/MyApp.Testing.Common/MyApp.Testing.Common.csproj" />
   </Folder>
 </Solution>

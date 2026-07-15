@@ -4,8 +4,7 @@ namespace MyApp.Domain.Ports;
 
 public interface IUniverseDataService
 {
-    string BaseApiUrl { get; }
-    
-    Task<List<int>> GetAvailableResourceIds();
-    Task<Player> GeneratePlayer(int resourceId);
+    bool CanHandle(Universe universe);
+    Task<List<int>> GetAvailableResourceIds(Universe universe);
+    Task<Player?> GeneratePlayer(Universe universe, int resourceId);
 }

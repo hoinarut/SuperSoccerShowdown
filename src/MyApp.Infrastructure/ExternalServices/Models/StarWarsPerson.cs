@@ -5,11 +5,11 @@ namespace MyApp.Infrastructure.ExternalServices.Models;
 public class StarWarsPerson
 {
     [JsonPropertyName("height")]
-    public decimal Height { get; set; }
+    public string Height { get; set; } = string.Empty;
 
     [JsonPropertyName("mass")]
-    public decimal Mass { get; set; }
+    public string Mass { get; set; } = string.Empty;
 
     [JsonPropertyName("name")]
-    public string Name { get; set; }
+    public string Name { get; set; } = string.Empty;
 }

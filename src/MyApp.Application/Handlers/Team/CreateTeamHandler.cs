@@ -11,8 +11,10 @@ public sealed class CreateTeamHandler(ITeamManager teamManager)
     {
         var team = await teamManager.CreateTeam(command.UniverseId, command.Name, command.Attack, command.Defense);
 
-        return new TeamDto(team.Id, team.Name, team.AttackersCount, team.DefendersCount,
-            team.Players!.Select(p =>
-                new PlayerDto(p.Id, p.Name, p.Weight, p.Height, p.Type)).ToList());
+        return team != null
+            ? new TeamDto(team.Id, team.Name, team.AttackersCount, team.DefendersCount,
+                team.Players!.Select(p =>
+                    new PlayerDto(p.Id, p.Name, p.Weight, p.Height, p.Type, p.ExternalResourceId)).ToList())
+            : null;
     }
 }

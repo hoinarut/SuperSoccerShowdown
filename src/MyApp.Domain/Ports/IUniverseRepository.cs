@@ -2,7 +2,7 @@ using MyApp.Domain.Entities;
 
 namespace MyApp.Domain.Ports;
 
-public interface IUniverseRepository
+public interface IUniverseRepository : IRepository<Universe>
 {
-    Task<Universe?> GetByIdAsync(int id, CancellationToken cancellationToken = default);
+    Task<List<int>> GetUsedExternalResourceIds(int universeId);
 }

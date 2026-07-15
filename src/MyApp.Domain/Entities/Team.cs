@@ -13,12 +13,12 @@ public class Team(string name, int universeId, int attackersCount, int defenders
     
     [Range(0, 4)]
     public int DefendersCount { get; private set; } = defendersCount;
-    
-    [MaxLength(Constants.NumberOfPlayers)]
-    public List<Player>? Players { get; private set; }
+
+    [MaxLength(Constants.NumberOfPlayers)] 
+    public List<Player>? Players { get; private set; } = [];
     
     public int UniverseId { get; private set; } = universeId;
-
+    
     public void AddPlayer(Player player)
     {
         Players ??= [];
@@ -35,16 +35,16 @@ public class Team(string name, int universeId, int attackersCount, int defenders
         {
             throw new InvalidOperationException(Constants.ErrorMessages.PlayersNotSet);
         }
-        var tallest = Players.MaxBy(p => p.Height);
+        var tallest = UnassignedPlayers.OrderByDescending(p => p.Height).ThenBy(p => p.Name).First();
         tallest!.SetPlayerType(PlayerType.Goalie);
 
-        var defenders = Players.OrderByDescending(p => p.Weight).Take(DefendersCount);
+        var defenders = UnassignedPlayers.OrderByDescending(p => p.Weight).ThenBy(p => p.Name).Take(DefendersCount);
         foreach (var player in defenders)
         {
             player.SetPlayerType(PlayerType.Defence);
         }
         
-        var attackers = Players.OrderBy(p =>p.Height).Take(AttackersCount);
+        var attackers = UnassignedPlayers.OrderBy(p =>p.Height).ThenBy(p => p.Name).Take(AttackersCount);
         foreach (var player in attackers)
         {
             player.SetPlayerType(PlayerType.Offence);
@@ -70,4 +70,6 @@ public class Team(string name, int universeId, int attackersCount, int defenders
             throw new InvalidOperationException(Constants.ErrorMessages.AttackersNotSet);
         }
     }
+
+    private List<Player> UnassignedPlayers => Players?.Where(p => (int)p.Type == 0).ToList() ?? [];
 }

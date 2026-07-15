@@ -2,7 +2,7 @@ using MyApp.Domain.Entities;
 
 namespace MyApp.Domain.Ports;
 
-public interface IPlayerRepository
+public interface IPlayerRepository : IRepository<Player>
 {
-    Task<Player?> GetByIdAsync(int id, CancellationToken cancellationToken = default);
+    Task<bool> Exists(string name);
 }

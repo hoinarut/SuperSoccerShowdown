@@ -1,0 +1,3 @@
+bucket = "your-terraform-state-bucket"
+key    = "sss/terraform.tfstate"
+region = "eu-west-1"

@@ -1,0 +1,82 @@
+name: Build, Test, and Deploy
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+env:
+  AWS_REGION: ${{ vars.AWS_REGION || 'eu-west-1' }}
+  DOTNET_VERSION: 10.0.x
+  ARTIFACTS_DIR: artifacts
+
+permissions:
+  contents: read
+
+jobs:
+  build-test-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Restore
+        run: dotnet restore MySolution.slnx
+
+      - name: Test
+        run: dotnet test MySolution.slnx --configuration Release --no-restore
+
+      - name: Publish API for Lambda
+        run: |
+          dotnet publish src/MyApp.Api/MyApp.Api.csproj \
+            --configuration Release \
+            --runtime linux-x64 \
+            --self-contained false \
+            --output "${{ env.ARTIFACTS_DIR }}/lambda"
+
+      - name: Package Lambda zip
+        run: |
+          cd "${{ env.ARTIFACTS_DIR }}/lambda"
+          zip -r ../api.zip .
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.9.8
+
+      - name: Terraform Init
+        working-directory: infra
+        run: |
+          terraform init \
+            -backend-config="bucket=${{ secrets.TF_STATE_BUCKET }}" \
+            -backend-config="key=${{ vars.TF_STATE_KEY || 'sss/terraform.tfstate' }}" \
+            -backend-config="region=${{ env.AWS_REGION }}"
+
+      - name: Terraform Apply
+        working-directory: infra
+        env:
+          TF_VAR_project_name: ${{ vars.PROJECT_NAME || 'sss' }}
+          TF_VAR_environment: ${{ vars.ENVIRONMENT || 'dev' }}
+          TF_VAR_aws_region: ${{ env.AWS_REGION }}
+          TF_VAR_database_connection_string: ${{ secrets.DATABASE_CONNECTION_STRING }}
+          TF_VAR_lambda_deployment_package_path: ${{ github.workspace }}/${{ env.ARTIFACTS_DIR }}/api.zip
+          TF_VAR_lambda_package_version: ${{ github.sha }}
+        run: terraform apply -auto-approve -input=false
+
+      - name: Output API URL
+        working-directory: infra
+        run: terraform output api_gateway_url

@@ -3,32 +3,26 @@ using MyApp.Domain.Enums;
 
 namespace MyApp.Domain.Entities;
 
-public class Player : BaseEntity
+public class Player(string name, double weight, double height, int externalResourceId)
+    : BaseEntity
 {
     [MaxLength(50)]
-    public string Name { get; private set; }
-    [Range(50, 120)]
-    public decimal Weight { get; private set; }
-    [Range(150, 220)]
-    public decimal Height { get; private set; }
-    public PlayerType Type { get; private set; }
+    public string Name { get; private set; } = name;
 
-    public Player(int id, string name, decimal weight, decimal height)
-    {
-        Id = id;
-        Name = name;
-        Weight = weight;
-        Height = height;
-    }
-    public Player(string name, decimal weight, decimal height)
-    {
-        Name = name;
-        Weight = weight;
-        Height = height;
-    }
+    [Range(50, 120)]
+    public double Weight { get; private set; } = weight;
+
+    [Range(150, 220)]
+    public double Height { get; private set; } = height;
+
+    public PlayerType Type { get; private set; }
+    public int ExternalResourceId { get; private set; } = externalResourceId;
+    public virtual Team Team { get; set; }
     
     public void SetPlayerType(PlayerType playerType)
     {
         Type = playerType;
     }
+    
+    public bool HasValidMeasurements => Weight != 0 && Height != 0;
 }
