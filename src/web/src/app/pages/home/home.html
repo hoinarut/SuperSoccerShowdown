@@ -53,11 +53,11 @@
 </section>
 
 @if (modalOpen()) {
-  <div class="modal-backdrop" (click)="closeModal()">
+  <div class="modal-backdrop">
     <div class="modal" role="dialog" aria-modal="true" aria-labelledby="create-team-title" (click)="$event.stopPropagation()">
       <header class="modal__header">
         <h2 id="create-team-title">Generate team</h2>
-        <button type="button" class="icon-button" aria-label="Close" (click)="closeModal()">×</button>
+        <button type="button" class="icon-button" aria-label="Close" [disabled]="submitting()" (click)="closeModal()">×</button>
       </header>
 
       <form class="modal__body" [formGroup]="form" (ngSubmit)="submit()">
@@ -98,7 +98,10 @@
 
         <footer class="modal__footer">
           <button type="button" class="secondary" [disabled]="submitting()" (click)="closeModal()">Cancel</button>
-          <button type="submit" class="primary" [disabled]="submitting() || form.invalid || !lineupValid()">
+          <button type="submit" class="primary button-with-spinner" [disabled]="submitting() || form.invalid || !lineupValid()">
+            @if (submitting()) {
+              <span class="button-spinner" aria-hidden="true"></span>
+            }
             {{ submitting() ? 'Generating…' : 'Generate' }}
           </button>
         </footer>

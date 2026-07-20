@@ -92,7 +92,7 @@ export class Home {
       next: (team) => {
         this.teams.update((teams) => [...teams, team]);
         this.submitting.set(false);
-        this.modalOpen.set(false);
+        this.closeModal();
       },
       error: (err) => {
         const message =
