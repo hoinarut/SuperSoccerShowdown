@@ -2,8 +2,8 @@ project_name = "sss"
 environment  = "dev"
 aws_region   = "eu-west-1"
 
-# Required when enable_rds = false
-database_connection_string = "Server=your-sql-server;Database=sss;User ID=sa;Password=change-me;TrustServerCertificate=true;"
+# Only used when enable_rds = false
+# database_connection_string = "Server=your-sql-server;Database=sss-db;User ID=sa;Password=change-me;TrustServerCertificate=true;"
 
 # Set by CI when deploying the API package.
 # lambda_deployment_package_path = "../artifacts/api.zip"
@@ -14,7 +14,11 @@ lambda_timeout_seconds = 30
 lambda_runtime         = "dotnet10"
 lambda_handler         = "MyApp.Api"
 
-# Optional managed SQL Server (adds VPC + NAT + RDS cost)
-enable_rds  = false
+# Public SQL Server Express (db.t3.micro) in the existing VPC. Password is hard-coded in locals.tf.
+enable_rds  = true
 db_username = "sssadmin"
-# db_password = "change-me"
+vpc_id      = "vpc-035662277bdd39c8a"
+rds_subnet_ids = [
+  "subnet-014a8c646ab18a5d7",
+  "subnet-0ca070335608181f0",
+]

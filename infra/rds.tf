@@ -2,9 +2,12 @@ resource "aws_db_subnet_group" "main" {
   count = var.enable_rds ? 1 : 0
 
   name       = "${local.name_prefix}-db"
-  subnet_ids = aws_subnet.private[*].id
+  subnet_ids = var.rds_subnet_ids
 }
 
+# Smallest public SQL Server Express instance (db.t3.micro, 20 GB gp3).
+# Note: RDS SQL Server does not support creating a named database at provision time;
+# the API connection string targets Database=sss-db (created by app migrations).
 resource "aws_db_instance" "main" {
   count = var.enable_rds ? 1 : 0
 
@@ -19,7 +22,7 @@ resource "aws_db_instance" "main" {
   storage_type      = "gp3"
 
   username = var.db_username
-  password = var.db_password
+  password = local.db_password
 
   db_subnet_group_name   = aws_db_subnet_group.main[0].name
   vpc_security_group_ids = [aws_security_group.rds[0].id]
@@ -27,7 +30,7 @@ resource "aws_db_instance" "main" {
   backup_retention_period = 7
   skip_final_snapshot     = true
   deletion_protection     = false
-  publicly_accessible     = false
+  publicly_accessible     = true
   multi_az                = false
 
   apply_immediately = true

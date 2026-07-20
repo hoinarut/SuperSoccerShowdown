@@ -3,8 +3,12 @@ locals {
 
   deploy_api = var.lambda_deployment_package_path != ""
 
+  # Hard-coded RDS credentials and database name for the API Lambda.
+  db_name     = "sss-db"
+  db_password = "SssPwd0026!"
+
   connection_string = var.enable_rds ? (
-    "Server=${aws_db_instance.main[0].address},${aws_db_instance.main[0].port};Database=${var.project_name};User ID=${var.db_username};Password=${var.db_password};TrustServerCertificate=true;Encrypt=true;"
+    "Server=${aws_db_instance.main[0].address},${aws_db_instance.main[0].port};Database=${local.db_name};User ID=${var.db_username};Password=${local.db_password};TrustServerCertificate=true;Encrypt=true;"
   ) : var.database_connection_string
 
   cors_allowed_origins = [

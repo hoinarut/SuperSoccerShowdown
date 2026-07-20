@@ -75,7 +75,7 @@ jobs:
           TF_VAR_project_name: ${{ vars.PROJECT_NAME || 'sss' }}
           TF_VAR_environment: ${{ vars.ENVIRONMENT || 'dev' }}
           TF_VAR_aws_region: ${{ env.AWS_REGION }}
-          TF_VAR_database_connection_string: ${{ secrets.DATABASE_CONNECTION_STRING }}
+          TF_VAR_enable_rds: true
           TF_VAR_lambda_deployment_package_path: ${{ github.workspace }}/${{ env.ARTIFACTS_DIR }}/api.zip
           TF_VAR_lambda_package_version: ${{ github.sha }}
         run: terraform apply -auto-approve -input=false

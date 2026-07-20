@@ -23,7 +23,7 @@ variable "aspnetcore_environment" {
 }
 
 variable "database_connection_string" {
-  description = "SQL Server connection string for the API. Required unless enable_rds is true."
+  description = "SQL Server connection string for the API. Used only when enable_rds is false."
   type        = string
   sensitive   = true
   default     = ""
@@ -72,32 +72,34 @@ variable "api_gateway_stage_name" {
 }
 
 variable "enable_rds" {
-  description = "When true, provisions a VPC, NAT gateway, and SQL Server Express RDS instance."
+  description = "When true, provisions a publicly accessible SQL Server Express RDS instance (db.t3.micro) in the existing VPC."
   type        = bool
-  default     = false
+  default     = true
 }
 
 variable "db_username" {
-  description = "Master username for the optional RDS SQL Server instance."
+  description = "Master username for the RDS SQL Server instance."
   type        = string
   default     = "sssadmin"
 }
 
-variable "db_password" {
-  description = "Master password for the optional RDS SQL Server instance."
-  type        = string
-  sensitive   = true
-  default     = ""
-}
-
 variable "db_allocated_storage_gb" {
-  description = "Allocated storage for the optional RDS instance in GB."
+  description = "Allocated storage for the RDS SQL Server Express instance in GB (minimum 20)."
   type        = number
   default     = 20
 }
 
-variable "vpc_cidr" {
-  description = "CIDR block for the optional VPC."
+variable "vpc_id" {
+  description = "Existing VPC ID used for the RDS instance and security group."
   type        = string
-  default     = "10.0.0.0/16"
+  default     = "vpc-035662277bdd39c8a"
+}
+
+variable "rds_subnet_ids" {
+  description = "Existing subnet IDs used by the RDS DB subnet group (must be in at least two AZs)."
+  type        = list(string)
+  default = [
+    "subnet-014a8c646ab18a5d7",
+    "subnet-0ca070335608181f0",
+  ]
 }

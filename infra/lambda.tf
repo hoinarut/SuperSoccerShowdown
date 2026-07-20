@@ -23,15 +23,6 @@ resource "aws_lambda_function" "api" {
     variables = local.lambda_environment
   }
 
-  dynamic "vpc_config" {
-    for_each = var.enable_rds ? [1] : []
-
-    content {
-      subnet_ids         = aws_subnet.private[*].id
-      security_group_ids = [aws_security_group.lambda[0].id]
-    }
-  }
-
   depends_on = [
     aws_cloudwatch_log_group.api,
     aws_iam_role_policy_attachment.lambda_basic_execution,
