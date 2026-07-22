@@ -33,17 +33,7 @@ output "api_gateway_url" {
   value       = try(aws_apigatewayv2_stage.default[0].invoke_url, null)
 }
 
-output "database_secret_arn" {
-  description = "Secrets Manager ARN containing the SQL Server connection string."
-  value       = aws_secretsmanager_secret.database.arn
-}
-
 output "lambda_execution_role_arn" {
   description = "IAM role ARN used by the Lambda function."
   value       = aws_iam_role.lambda.arn
-}
-
-output "rds_endpoint" {
-  description = "RDS endpoint when enable_rds is true."
-  value       = try(aws_db_instance.main[0].address, null)
 }

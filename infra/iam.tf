@@ -18,21 +18,3 @@ resource "aws_iam_role_policy_attachment" "lambda_basic_execution" {
   role       = aws_iam_role.lambda.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }
-
-data "aws_iam_policy_document" "lambda_secrets" {
-  statement {
-    actions = [
-      "secretsmanager:GetSecretValue",
-    ]
-
-    resources = [
-      aws_secretsmanager_secret.database.arn,
-    ]
-  }
-}
-
-resource "aws_iam_role_policy" "lambda_secrets" {
-  name   = "${local.name_prefix}-lambda-secrets"
-  role   = aws_iam_role.lambda.id
-  policy = data.aws_iam_policy_document.lambda_secrets.json
-}

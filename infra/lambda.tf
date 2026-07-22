@@ -26,7 +26,6 @@ resource "aws_lambda_function" "api" {
   depends_on = [
     aws_cloudwatch_log_group.api,
     aws_iam_role_policy_attachment.lambda_basic_execution,
-    aws_secretsmanager_secret_version.database,
     aws_s3_object.lambda_package,
   ]
 }

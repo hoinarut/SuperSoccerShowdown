@@ -22,13 +22,6 @@ variable "aspnetcore_environment" {
   default     = "Production"
 }
 
-variable "database_connection_string" {
-  description = "SQL Server connection string for the API. Used only when enable_rds is false."
-  type        = string
-  sensitive   = true
-  default     = ""
-}
-
 variable "lambda_deployment_package_path" {
   description = "Local path to the Lambda deployment zip published by CI. Leave empty to provision supporting resources without deploying the function."
   type        = string
@@ -69,37 +62,4 @@ variable "api_gateway_stage_name" {
   description = "API Gateway stage name exposed in the public URL."
   type        = string
   default     = "$default"
-}
-
-variable "enable_rds" {
-  description = "When true, provisions a publicly accessible SQL Server Express RDS instance (db.t3.micro) in the existing VPC."
-  type        = bool
-  default     = true
-}
-
-variable "db_username" {
-  description = "Master username for the RDS SQL Server instance."
-  type        = string
-  default     = "sssadmin"
-}
-
-variable "db_allocated_storage_gb" {
-  description = "Allocated storage for the RDS SQL Server Express instance in GB (minimum 20)."
-  type        = number
-  default     = 20
-}
-
-variable "vpc_id" {
-  description = "Existing VPC ID used for the RDS instance and security group."
-  type        = string
-  default     = "vpc-035662277bdd39c8a"
-}
-
-variable "rds_subnet_ids" {
-  description = "Existing subnet IDs used by the RDS DB subnet group (must be in at least two AZs)."
-  type        = list(string)
-  default = [
-    "subnet-014a8c646ab18a5d7",
-    "subnet-0ca070335608181f0",
-  ]
 }
