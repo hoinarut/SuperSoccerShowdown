@@ -29,8 +29,8 @@ public class PokemonUniverseDataService(HttpClient httpClient, ILogger<PokemonUn
 
             return new Player(
                 response.Name,
-                response.Weight / 10,
-                response.Height * 10,
+                new Weight(response.Weight / 10),
+                new Height(response.Height * 10),
                 resourceId);
         }
         catch(HttpRequestException hex)

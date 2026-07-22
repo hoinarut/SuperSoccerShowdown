@@ -12,8 +12,8 @@ public class TeamRepositoryTests : EfRepositoryTestBase
         await SeedUniverseAsync();
         var repository = new TeamRepository(DbContext);
         var team = new Team("Dream Team", universeId: 1, attackersCount: 1, defendersCount: 1);
-        team.AddPlayer(new Player("P1", 80, 180, externalResourceId: 10));
-        team.AddPlayer(new Player("P2", 81, 181, externalResourceId: 11));
+        team.AddPlayer(new Player("P1", new Weight(80), new Height(180), externalResourceId: 10));
+        team.AddPlayer(new Player("P2", new Weight(81), new Height(181), externalResourceId: 11));
 
         var created = await repository.AddAsync(team);
 
@@ -28,8 +28,8 @@ public class TeamRepositoryTests : EfRepositoryTestBase
         await SeedUniverseAsync();
         var repository = new TeamRepository(DbContext);
         var team = new Team("Dream Team", universeId: 1, attackersCount: 1, defendersCount: 1);
-        team.AddPlayer(new Player("P1", 80, 180, externalResourceId: 10));
-        team.AddPlayer(new Player("P2", 81, 181, externalResourceId: 11));
+        team.AddPlayer(new Player("P1", new Weight(80), new Height(180), externalResourceId: 10));
+        team.AddPlayer(new Player("P2", new Weight(81), new Height(181), externalResourceId: 11));
         await repository.AddAsync(team);
 
         var teams = await repository.GetAllAsync();

@@ -13,7 +13,7 @@ public class PlayerRepositoryTests : EfRepositoryTestBase
         var teamRepository = new TeamRepository(DbContext);
         var repository = new PlayerRepository(DbContext);
         var team = new Team("Team", universeId: 1, attackersCount: 1, defendersCount: 1);
-        team.AddPlayer(new Player("Luke Skywalker", 80, 180, externalResourceId: 1));
+        team.AddPlayer(new Player("Luke Skywalker", new Weight(80), new Height(180), externalResourceId: 1));
         await teamRepository.AddAsync(team);
 
         var exists = await repository.Exists("Luke Skywalker");
@@ -39,7 +39,7 @@ public class PlayerRepositoryTests : EfRepositoryTestBase
         var teamRepository = new TeamRepository(DbContext);
         var repository = new PlayerRepository(DbContext);
         var team = new Team("Team", universeId: 1, attackersCount: 1, defendersCount: 1);
-        team.AddPlayer(new Player("Leia Organa", 80, 180, externalResourceId: 2));
+        team.AddPlayer(new Player("Leia Organa", new Weight(80), new Height(180), externalResourceId: 2));
         await teamRepository.AddAsync(team);
         var playerId = team.Players!.Single().Id;
 

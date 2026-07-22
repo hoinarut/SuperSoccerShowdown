@@ -60,8 +60,8 @@ public class StarWarsUniverseDataServiceTests
 
         player.Should().NotBeNull();
         player!.Name.Should().Be("Luke Skywalker");
-        player.Weight.Should().Be(77);
-        player.Height.Should().Be(172);
+        player.Weight.Value.Should().Be(77);
+        player.Height.Value.Should().Be(172);
         player.ExternalResourceId.Should().Be(1);
         handler.Requests.Should().ContainSingle()
             .Which.RequestUri!.ToString().Should().Be("https://swapi.dev/api/people/1");
@@ -83,8 +83,8 @@ public class StarWarsUniverseDataServiceTests
         var player = await service.GeneratePlayer(Universe, resourceId: 13);
 
         player.Should().NotBeNull();
-        player!.Weight.Should().Be(0);
-        player.Height.Should().Be(200);
+        player!.Weight.Value.Should().Be(0);
+        player.Height.Value.Should().Be(200);
         player.HasValidMeasurements.Should().BeFalse();
     }
 

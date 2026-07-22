@@ -28,8 +28,8 @@ public class StarWarsUniverseDataService(HttpClient httpClient, ILogger<StarWars
 
             return new Player(
                 response.Name,
-                ParseMeasurement(response.Mass),
-                ParseMeasurement(response.Height),
+                new Weight(ParseMeasurement(response.Mass)),
+                new Height(ParseMeasurement(response.Height)),
                 resourceId);
         }
         catch(HttpRequestException hex)

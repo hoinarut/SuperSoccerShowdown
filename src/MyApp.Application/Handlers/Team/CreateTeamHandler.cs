@@ -27,6 +27,6 @@ public sealed class CreateTeamHandler(ITeamManager teamManager, IUniverseReposit
             team.AttackersCount,
             team.DefendersCount,
             team.Players!.Select(player =>
-                new PlayerDto(player.Id, player.Name, player.Weight, player.Height, player.Type, player.ExternalResourceId)).ToList());
+                new PlayerDto(player.Id, player.Name, player.Weight.Value, player.Height.Value, player.Type, player.ExternalResourceId)).ToList());
     }
 }

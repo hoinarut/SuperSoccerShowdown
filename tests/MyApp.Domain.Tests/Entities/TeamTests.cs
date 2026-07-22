@@ -221,7 +221,7 @@ public class TeamTests
     }
 
     private static Player CreatePlayer(string name, double weight, double height, int resourceId = 1) =>
-        new(name, weight, height, resourceId);
+        new(name, new Weight(weight), new Height(height), resourceId);
 
     private static Team CreateTeamWithPlayers(int attackersCount, int defendersCount, params Player[] players)
     {

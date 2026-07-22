@@ -19,8 +19,18 @@ public sealed class PlayerConfiguration : IEntityTypeConfiguration<Player>
             .HasMaxLength(50)
             .IsRequired();
 
-        builder.Property(player => player.Weight);
-        builder.Property(player => player.Height);
+        builder.Ignore(player => player.Weight);
+        builder.Ignore(player => player.Height);
+
+        builder.HasMany(player => player.Stats)
+            .WithOne()
+            .HasForeignKey("PlayerId")
+            .OnDelete(DeleteBehavior.Cascade)
+            .IsRequired();
+
+        builder.Navigation(player => player.Stats)
+            .AutoInclude();
+
         builder.Property(player => player.ExternalResourceId);
         builder.Property(player => player.Type)
             .HasConversion<int>();

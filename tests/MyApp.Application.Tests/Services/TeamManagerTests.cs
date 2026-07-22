@@ -147,7 +147,7 @@ public class TeamManagerTests : BaseUnitTests
             {
                 generatePlayerCalls++;
                 return generatePlayerCalls <= 2
-                    ? new Player("Invalid", 0, 180, resourceId)
+                    ? new Player("Invalid", new Weight(0), new Height(180), resourceId)
                     : CreateValidPlayer($"Player-{resourceId}", resourceId);
             });
 
@@ -228,7 +228,7 @@ public class TeamManagerTests : BaseUnitTests
         UniverseRepository.Setup(x => x.GetUsedExternalResourceIds(universeId))
             .ReturnsAsync([]);
         UniverseDataServiceMock.Setup(x => x.GeneratePlayer(universe, It.IsAny<int>()))
-            .ReturnsAsync((Universe _, int resourceId) => new Player("Invalid", 0, 0, resourceId));
+            .ReturnsAsync((Universe _, int resourceId) => new Player("Invalid", new Weight(0), new Height(0), resourceId));
         SetupLoggerMock(LoggerMock, LogLevel.Warning);
 
         var team = await _teamManager.CreateTeam(universeId, "Team", 1, 1);
@@ -291,7 +291,7 @@ public class TeamManagerTests : BaseUnitTests
         };
 
     private static Player CreateValidPlayer(string name, int resourceId) =>
-        new(name, weight: 80, height: 180, resourceId);
+        new(name, new Weight(80), new Height(180), resourceId);
 
     private void SetUpUniverse(Universe? value)
     {
@@ -340,7 +340,7 @@ public class TeamManagerTests : BaseUnitTests
         public Task<Player?> GeneratePlayer(Universe universe, int resourceId)
         {
             GeneratePlayerCallCount++;
-            return Task.FromResult<Player?>(new Player($"SW-{resourceId}", 80, 180, resourceId));
+            return Task.FromResult<Player?>(new Player($"SW-{resourceId}", new Weight(80), new Height(180), resourceId));
         }
     }
 

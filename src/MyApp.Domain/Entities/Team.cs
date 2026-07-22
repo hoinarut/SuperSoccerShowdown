@@ -35,16 +35,16 @@ public class Team(string name, int universeId, int attackersCount, int defenders
         {
             throw new InvalidOperationException(Constants.ErrorMessages.PlayersNotSet);
         }
-        var tallest = UnassignedPlayers.OrderByDescending(p => p.Height).ThenBy(p => p.Name).First();
+        var tallest = UnassignedPlayers.OrderByDescending(p => p.Height.Value).ThenBy(p => p.Name).First();
         tallest!.SetPlayerType(PlayerType.Goalie);
 
-        var defenders = UnassignedPlayers.OrderByDescending(p => p.Weight).ThenBy(p => p.Name).Take(DefendersCount);
+        var defenders = UnassignedPlayers.OrderByDescending(p => p.Weight.Value).ThenBy(p => p.Name).Take(DefendersCount);
         foreach (var player in defenders)
         {
             player.SetPlayerType(PlayerType.Defence);
         }
         
-        var attackers = UnassignedPlayers.OrderBy(p =>p.Height).ThenBy(p => p.Name).Take(AttackersCount);
+        var attackers = UnassignedPlayers.OrderBy(p => p.Height.Value).ThenBy(p => p.Name).Take(AttackersCount);
         foreach (var player in attackers)
         {
             player.SetPlayerType(PlayerType.Offence);

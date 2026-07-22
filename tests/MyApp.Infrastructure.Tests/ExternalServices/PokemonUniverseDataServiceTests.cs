@@ -60,8 +60,8 @@ public class PokemonUniverseDataServiceTests
 
         player.Should().NotBeNull();
         player!.Name.Should().Be("pikachu");
-        player.Weight.Should().Be(6);
-        player.Height.Should().Be(40);
+        player.Weight.Value.Should().Be(6);
+        player.Height.Value.Should().Be(40);
         player.ExternalResourceId.Should().Be(25);
         handler.Requests.Should().ContainSingle()
             .Which.RequestUri!.ToString().Should().Be("https://pokeapi.co/api/v2/pokemon/25");

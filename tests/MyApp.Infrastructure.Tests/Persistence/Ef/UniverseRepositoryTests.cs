@@ -15,12 +15,12 @@ public class UniverseRepositoryTests : EfRepositoryTestBase
         var repository = new UniverseRepository(DbContext);
 
         var starWarsTeam = new Team("Star Wars Team", universeId: 1, attackersCount: 1, defendersCount: 1);
-        starWarsTeam.AddPlayer(new Player("Luke", 80, 180, externalResourceId: 10));
-        starWarsTeam.AddPlayer(new Player("Leia", 75, 170, externalResourceId: 20));
+        starWarsTeam.AddPlayer(new Player("Luke", new Weight(80), new Height(180), externalResourceId: 10));
+        starWarsTeam.AddPlayer(new Player("Leia", new Weight(75), new Height(170), externalResourceId: 20));
         await teamRepository.AddAsync(starWarsTeam);
 
         var pokemonTeam = new Team("Pokemon Team", universeId: 2, attackersCount: 1, defendersCount: 1);
-        pokemonTeam.AddPlayer(new Player("Pikachu", 60, 40, externalResourceId: 30));
+        pokemonTeam.AddPlayer(new Player("Pikachu", new Weight(60), new Height(40), externalResourceId: 30));
         await teamRepository.AddAsync(pokemonTeam);
 
         var starWarsResourceIds = await repository.GetUsedExternalResourceIds(universeId: 1);

@@ -7,6 +7,7 @@ public class MyAppDbContext(DbContextOptions<MyAppDbContext> options) : DbContex
 {
     public DbSet<Team> Teams => Set<Team>();
     public DbSet<Player> Players => Set<Player>();
+    public DbSet<PlayerStat> PlayerStats => Set<PlayerStat>();
     public DbSet<Universe> Universes => Set<Universe>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
